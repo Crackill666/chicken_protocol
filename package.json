@@ -1,0 +1,21 @@
+{
+  "name": "chicken-protocol",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "contracts",
+    "packages/shared",
+    "apps/web"
+  ],
+  "packageManager": "npm@10.8.2",
+  "scripts": {
+    "dev": "concurrently -n chain,web -c yellow,cyan \"npm run chain -w @chicken-protocol/contracts\" \"npm run dev -w @chicken-protocol/web\"",
+    "deploy:local": "npm run deploy:local -w @chicken-protocol/contracts",
+    "deploy:amoy": "npm run deploy:amoy -w @chicken-protocol/contracts",
+    "test": "npm run test -w @chicken-protocol/contracts",
+    "build": "npm run build -w @chicken-protocol/web"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.0"
+  }
+}
