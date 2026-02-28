@@ -51,13 +51,14 @@ const gasEstimatorClient = createPublicClient({
   chain: polygonAmoy,
   transport: http(AMOY_RPC_URL),
 });
+const ASSET_BASE = `${import.meta.env.BASE_URL}game-art/`;
 const GAME_ART = {
-  farmBase: "/game-art/baseGranja.png",
-  farmNft: "/game-art/granjaNFT.png",
-  genesis: "/game-art/genesis.png",
-  offspring: "/game-art/crias.png",
-  incubator: "/game-art/incubadora.png",
-  chickenItem: "/game-art/chicken_item.png",
+  farmBase: `${ASSET_BASE}baseGranja.png`,
+  farmNft: `${ASSET_BASE}granjaNFT.png`,
+  genesis: `${ASSET_BASE}genesis.png`,
+  offspring: `${ASSET_BASE}crias.png`,
+  incubator: `${ASSET_BASE}incubadora.png`,
+  chickenItem: `${ASSET_BASE}chicken_item.png`,
 } as const;
 
 const TEXT = {

@@ -1,0 +1,68 @@
+name: Deploy Web to GitHub Pages
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "apps/web/**"
+      - "packages/shared/**"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/deploy-pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build web
+        run: npm run build -w @chicken-protocol/web
+        env:
+          VITE_CHAIN_ID: "80002"
+          VITE_AMOY_RPC_URL: "https://rpc-amoy.polygon.technology"
+          VITE_GAME_ADDRESS: "0x7bE5aC43f25A5887A5cd95D0f749d6dF14Dcd461"
+          VITE_FARM_NFT: "0x6384F18D29aCA16E05C157fD508979e5A651B64F"
+          VITE_GENESIS_NFT: "0x2c3C077EC6806BA0713790c31cC1F1B1056D2428"
+          VITE_OFFSPRING_NFT: "0x77190C75FFE8Fea37876DBaa042e4568d82Fc1B4"
+          VITE_INCUBATOR_NFT: "0x0156c4066084B2aA8b68e74017883c7D5bf6c375"
+          VITE_WALLETCONNECT_PROJECT_ID: ${{ secrets.VITE_WALLETCONNECT_PROJECT_ID }}
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: apps/web/dist
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
